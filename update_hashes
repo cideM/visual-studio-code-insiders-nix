@@ -1,0 +1,30 @@
+#! /usr/bin/env nix-shell
+#! nix-shell -p fish -i fish
+
+# https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=visual-studio-code-insiders-bin
+# For some valid arch and OS combos
+
+argparse --name="update_vscode_archive_sha256" 'b/build=' -- $argv
+
+if not set -q _flag_build
+  echo "Required option -b/--build not given"
+  exit 1
+end
+
+## TODO: flag validation
+# -b = darwin linux darwin-arm64
+set -l generated_url https://update.code.visualstudio.com/latest/$_flag_build/insider
+
+echo "Get real URL by following redirects for generated URL: $generated_url"
+set -l real_url (curl -IL -o /dev/null -w %{url_effective} $generated_url)
+
+echo "Download archive and generate hash from real URL: $real_url"
+# https://fishshell.com/docs/current/cmds/psub.html
+set -l hash (nix-hash --type sha256 --base32 --flat (curl -o - $real_url | psub))
+
+echo "Update output file with real URL and hash"
+echo $real_url > $_flag_build.txt
+echo $hash >> $_flag_build.txt
+
+
+
