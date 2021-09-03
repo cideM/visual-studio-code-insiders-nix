@@ -4,6 +4,11 @@
 # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=visual-studio-code-insiders-bin
 # For some valid arch and OS combos
 
+# Easier if I create a folder for each valid combo and then have 2 files in
+# each folder: url and hash
+# Then in my flake I can generate src by mapping flake system to folder name
+# and just read ./systems/$mappedSystem/hash and ./systems/$mappedSystem/url
+
 function _validate_build -d "Only allow certain architecture and OS combinations"
   # TODO: These should then also be supported in the Nix flake
   switch $_flag_value
