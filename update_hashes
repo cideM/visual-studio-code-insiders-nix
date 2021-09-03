@@ -4,10 +4,37 @@
 # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=visual-studio-code-insiders-bin
 # For some valid arch and OS combos
 
-argparse --name="update_vscode_archive_sha256" 'b/build=' -- $argv
+function _validate_build -d "Only allow certain architecture and OS combinations"
+  # TODO: These should then also be supported in the Nix flake
+  switch $_flag_value
+    case "darwin-arm64"
+      return 0
+    case "darwin"
+      return 0
+    case "linux-x64"
+      return 0
+    case "linux-arm64"
+      return 0
+    case "linux-armhf"
+      return 0
+    case "linux-ia32"
+      return 0
+    case '*'
+      echo "invalid value $_flag_value, supported values are:"
+      echo -e "\tdarwin-arm64"
+      echo -e "\tdarwin"
+      echo -e "\tlinux-x64"
+      echo -e "\tlinux-arm64"
+      echo -e "\tlinux-armhf"
+      echo -e "\tlinux-ia32"
+      return 1
+  end
+end
+
+argparse --name="update_vscode_archive_sha256" 'b/build=!_validate_build' -- $argv
 
 if not set -q _flag_build
-  echo "Required option -b/--build not given"
+  echo "required option -b/--build not given or invalid"
   exit 1
 end
 
@@ -25,6 +52,3 @@ set -l hash (nix-hash --type sha256 --base32 --flat (curl -o - $real_url | psub)
 echo "Update output file with real URL and hash"
 echo $real_url > $_flag_build.txt
 echo $hash >> $_flag_build.txt
-
-
-
