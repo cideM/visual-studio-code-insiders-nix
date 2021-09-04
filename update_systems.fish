@@ -1,16 +1,7 @@
-#! /usr/bin/env nix-shell
-#! nix-shell -p fish -i fish
-
 # https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=visual-studio-code-insiders-bin
 # For some valid arch and OS combos
 
-# Easier if I create a folder for each valid combo and then have 2 files in
-# each folder: url and hash
-# Then in my flake I can generate src by mapping flake system to folder name
-# and just read ./systems/$mappedSystem/hash and ./systems/$mappedSystem/url
-
 function _validate_build -d "Only allow certain architecture and OS combinations"
-  # TODO: These should then also be supported in the Nix flake
   switch $_flag_value
     case "darwin-arm64"
       return 0
@@ -22,8 +13,8 @@ function _validate_build -d "Only allow certain architecture and OS combinations
       return 0
     case "linux-armhf"
       return 0
-    case "linux-ia32"
-      return 0
+    # case "linux-ia32"
+    #   return 0
     case '*'
       echo "invalid value $_flag_value, supported values are:"
       echo -e "\tdarwin-arm64"
@@ -31,7 +22,7 @@ function _validate_build -d "Only allow certain architecture and OS combinations
       echo -e "\tlinux-x64"
       echo -e "\tlinux-arm64"
       echo -e "\tlinux-armhf"
-      echo -e "\tlinux-ia32"
+      # echo -e "\tlinux-ia32"
       return 1
   end
 end
@@ -43,8 +34,10 @@ if not set -q _flag_build
   exit 1
 end
 
-## TODO: flag validation
-# -b = darwin linux darwin-arm64
+if not test -d systems
+  mkdir systems
+end
+
 set -l generated_url https://update.code.visualstudio.com/latest/$_flag_build/insider
 
 echo "Get real URL by following redirects for generated URL: $generated_url"
@@ -55,5 +48,9 @@ echo "Download archive and generate hash from real URL: $real_url"
 set -l hash (nix-hash --type sha256 --base32 --flat (curl -o - $real_url | psub))
 
 echo "Update output file with real URL and hash"
-echo $real_url > $_flag_build.txt
-echo $hash >> $_flag_build.txt
+if not test -d systems/$_flag_build
+  mkdir systems/$_flag_build
+end
+
+echo "\"$real_url\"" > systems/$_flag_build/url.nix
+echo "\"$hash\"" >> systems/$_flag_build/hash.nix
