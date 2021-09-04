@@ -53,4 +53,4 @@ if not test -d systems/$_flag_build
 end
 
 echo "\"$real_url\"" > systems/$_flag_build/url.nix
-echo "\"$hash\"" >> systems/$_flag_build/hash.nix
+echo "\"$hash\"" > systems/$_flag_build/hash.nix
