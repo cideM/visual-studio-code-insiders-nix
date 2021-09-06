@@ -22,44 +22,46 @@ Here's an example flake:
   };
 
   outputs = { self, home-manager, vscodeInsiders, unstable }:
-    homeConfigurations = {
-      m1-darwin = home-manager.lib.homeManagerConfiguration rec {
-        system = "aarch64-darwin";
-        pkgs = import unstable {
-          inherit system;
-        };
-        homeDirectory = "/Users/someone";
-        username = "someone";
-        configuration = { pkgs, config, ... }:
-          {
-            imports = [
-              {
-                nixpkgs.overlays = overlays ++ [
-                  (self: super: {
-                    vscodeInsiders = cidem-vsc.packages.${super.system}.vscodeInsiders;
-                  })
-                ];
-
-                nixpkgs.config = {
-                  allowUnfree = true;
-                };
-              }
-              ({ pkgs, config, ... }:
-                programs.vscode = {
-                  enable = true;
-                  # The important part!
-                  package = pkgs.vscodeInsiders;
-                };
-              })
-              ./path/to/home.nix
-            ];
+    let
+      homeConfigurations = {
+        m1-darwin = home-manager.lib.homeManagerConfiguration rec {
+          system = "aarch64-darwin";
+          pkgs = import unstable {
+            inherit system;
           };
+          homeDirectory = "/Users/someone";
+          username = "someone";
+          configuration = { pkgs, config, ... }:
+            {
+              imports = [
+                {
+                  nixpkgs.overlays = overlays ++ [
+                    (self: super: {
+                      vscodeInsiders = cidem-vsc.packages.${super.system}.vscodeInsiders;
+                    })
+                  ];
+
+                  nixpkgs.config = {
+                    allowUnfree = true;
+                  };
+                }
+                ({ pkgs, config, ... }:
+                  {
+                    programs.vscode = {
+                      enable = true;
+                      # The important part!
+                      package = pkgs.vscodeInsiders;
+                    };
+                  })
+                ./path/to/home.nix
+              ];
+            };
+        };
       };
+    in
+    {
+      inherit homeConfigurations;
     };
-  in
-  {
-    inherit homeConfigurations;
-  };
 }
 ```
 
