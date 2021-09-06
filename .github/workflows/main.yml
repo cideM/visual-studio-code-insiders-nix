@@ -35,4 +35,4 @@ jobs:
           add: 'systems'
           default_author: github_actor
           message: 'Updated Visual Studio Code Insiders build'
-          pull_strategy: 'NO-PULL'
+          pull_strategy: '--rebase'
