@@ -79,4 +79,4 @@ This repository takes care of two things for you:
   you don't have to.
 
 The Nix code is very straight forward since the heavy lifting is already done
-by Nixkpgs and Home Manasger, respectively.
+by Nixkpgs and Home Manager, respectively.
