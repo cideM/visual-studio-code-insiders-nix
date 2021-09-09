@@ -37,7 +37,7 @@ Here's an example flake:
                 {
                   nixpkgs.overlays = overlays ++ [
                     (self: super: {
-                      vscodeInsiders = cidem-vsc.packages.${super.system}.vscodeInsiders;
+                      vscodeInsiders = vscodeInsiders.packages.${super.system}.vscodeInsiders;
                     })
                   ];
 
