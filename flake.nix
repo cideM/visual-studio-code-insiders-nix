@@ -38,26 +38,35 @@
           };
 
           overlays = [
-            (self: super: {
-              vscode = super.vscode.overrideAttrs (old: {
-                preInstall =
-                  # This is a workaround until I've made it so that
-                  # sourceExecutableName is forwarded to vscode/generic.nix. I
-                  # think there's currently no way of reaching it through just
-                  # vscode.
-                  if (super.pkgs.stdenv.hostPlatform.system == "x86_64-darwin" || super.pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then ''
-                    cp ./Contents/Resources/app/bin/code ./Contents/Resources/app/bin/code-insiders
-                  '' else "";
+            (self: super:
+              let
+                originalVscode =
+                  if (system == "x86_64-darwin" || system == "aarch64-darwin")
+                  then super.vscode
+                  else (super.vscode.override ({ isInsiders = true; }));
 
-                pname = "vscode-insiders";
+              in
+              {
+                vscode = super.vscode.overrideAttrs (old: {
+                  preInstall =
+                    # This is a workaround until I've made it so that
+                    # sourceExecutableName is forwarded to vscode/generic.nix. I
+                    # think there's currently no way of reaching it through just
+                    # vscode.
+                    if (super.pkgs.stdenv.hostPlatform.system == "x86_64-darwin" || super.pkgs.stdenv.hostPlatform.system == "aarch64-darwin") then ''
+                      cp ./Contents/Resources/app/bin/code ./Contents/Resources/app/bin/code-insiders
+                    '' else "";
 
-                src = builtins.fetchurl {
-                  name = "VSCode_${mappedSystem}.${archive_fmt}";
-                  url = import (./systems + "/${mappedSystem}/url.nix");
-                  sha256 = import (./systems + "/${mappedSystem}/hash.nix");
-                };
-              });
-            })
+                  pname = "vscode-insiders";
+
+                  src = builtins.fetchurl {
+                    name = "VSCode_${mappedSystem}.${archive_fmt}";
+                    url = import (./systems + "/${mappedSystem}/url.nix");
+                    sha256 = import (./systems + "/${mappedSystem}/hash.nix");
+                  };
+                });
+              }
+            )
           ];
         };
       in
