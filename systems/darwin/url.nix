@@ -1,1 +1,1 @@
-"https://az764295.vo.msecnd.net/insider/82a8bec63666b0883d9bf762ee2aaa87e9be9a3a/VSCode-darwin.zip"
+"https://az764295.vo.msecnd.net/insider/bb221a61d29deabd99ee9431736d04f2175cb596/VSCode-darwin.zip"
