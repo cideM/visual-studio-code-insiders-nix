@@ -1,1 +1,1 @@
-"https://az764295.vo.msecnd.net/insider/9529e11f6481ae53bba821b05e34549491b9415e/code-insider-armhf-1661432881.tar.gz"
+"https://az764295.vo.msecnd.net/insider/35b971c92d210face8c446a1c6f1e470ad2bcb54/code-insider-armhf-1661505740.tar.gz"
