@@ -1,5 +1,9 @@
 # Use the Latest Visual Studio Code Insiders Build
 
+**This is no longer needed**
+
+Please use https://nixos.wiki/wiki/Visual_Studio_Code under the "Insiders Build" heading.
+
 ## Instructions
 
 Add this flake to your inputs, create an overlay that provides the latest
